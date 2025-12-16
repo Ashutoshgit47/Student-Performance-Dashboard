@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Student Performance Dashboard - Visualize, analyze, and compare student academic performance">
+    <title>Student Performance Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Header Section -->
+    <header class="header">
+        <div class="header-content">
+            <h1 class="header-title">📊 Student Performance Dashboard</h1>
+            <div class="search-container">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search by name or roll number..."
+                    aria-label="Search students">
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Filters & Actions Section -->
+        <section class="filters-section" aria-label="Filter options">
+            <div class="filter-group">
+                <label for="filterSelect" class="filter-label">Filter:</label>
+                <select id="filterSelect" class="filter-select">
+                    <option value="all">All Students</option>
+                    <option value="top">Top Performers (Avg ≥75)</option>
+                    <option value="below">Below Average (Avg &lt;50)</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="sortSelect" class="filter-label">Sort by:</label>
+                <select id="sortSelect" class="filter-select">
+                    <option value="rank">Rank</option>
+                    <option value="name">Name</option>
+                    <option value="roll">Roll Number</option>
+                </select>
+            </div>
+
+            <div class="actions-group">
+                <button id="addStudentBtn" class="action-btn btn-primary">
+                    <span>+</span> Add Student
+                </button>
+                <button id="printBtn" class="action-btn btn-secondary">
+                    <span>🖨</span> Print
+                </button>
+            </div>
+
+            <button id="compareBtn" class="compare-btn" disabled>
+                Compare Selected (0/2)
+            </button>
+        </section>
+
+        <!-- Dashboard Grid -->
+        <div class="dashboard-grid">
+            <!-- Student Table Section -->
+            <section class="table-section" aria-label="Student data table">
+                <h2 class="section-title">Student Records</h2>
+                <div class="table-wrapper">
+                    <table id="studentTable" class="student-table">
+                        <thead>
+                            <tr>
+                                <th class="checkbox-col">Select</th>
+                                <th>Rank</th>
+                                <th>Roll No.</th>
+                                <th>Name</th>
+                                <th>Math</th>
+                                <th>Science</th>
+                                <th>English</th>
+                                <th>History</th>
+                                <th>Computer</th>
+                                <th>Average</th>
+                                <th>Grade</th>
+                                <th class="actions-col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <!-- Dynamically populated -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Charts Section -->
+            <section class="charts-section" aria-label="Performance charts">
+                <h2 class="section-title">Performance Analysis</h2>
+
+                <!-- Radar Chart -->
+                <div class="chart-container">
+                    <h3 class="chart-title" id="radarChartTitle">Select a student to view radar chart</h3>
+                    <canvas id="radarChart" width="350" height="350"></canvas>
+                </div>
+            </section>
+        </div>
+
+        <!-- Insight Panel -->
+        <section class="insight-section" aria-label="Performance insights">
+            <h2 class="section-title">📈 Performance Insights</h2>
+            <div id="insightPanel" class="insight-panel">
+                <p class="insight-placeholder">Hover over or click a student row to see detailed insights.</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Add Student Modal -->
+    <div id="addStudentModal" class="modal" role="dialog" aria-labelledby="addModalTitle" aria-hidden="true">
+        <div class="modal-content modal-sm">
+            <div class="modal-header">
+                <h2 id="addModalTitle" class="modal-title">Add New Student</h2>
+                <button id="closeAddModal" class="modal-close" aria-label="Close modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="addStudentForm" class="add-form">
+                    <div class="form-group">
+                        <label for="studentName">Full Name</label>
+                        <input type="text" id="studentName" required placeholder="e.g. John Doe">
+                    </div>
+                    <div class="form-group">
+                        <label for="rollNo">Roll Number</label>
+                        <input type="text" id="rollNo" required placeholder="e.g. 111">
+                    </div>
+
+                    <h3 class="form-section-title">Subject Marks (0-100)</h3>
+                    <div class="marks-grid">
+                        <div class="form-group">
+                            <label for="markMath">Math</label>
+                            <input type="number" id="markMath" min="0" max="100" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="markScience">Science</label>
+                            <input type="number" id="markScience" min="0" max="100" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="markEnglish">English</label>
+                            <input type="number" id="markEnglish" min="0" max="100" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="markHistory">History</label>
+                            <input type="number" id="markHistory" min="0" max="100" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="markComputer">Computer</label>
+                            <input type="number" id="markComputer" min="0" max="100" required>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn-cancel" id="cancelAdd">Cancel</button>
+                        <button type="submit" class="btn-submit">Add Student</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comparison Modal -->
+    <div id="comparisonModal" class="modal" role="dialog" aria-labelledby="modalTitle" aria-hidden="true">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle" class="modal-title">Student Comparison</h2>
+                <button id="closeModal" class="modal-close" aria-label="Close modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="comparison-names" id="comparisonNames"></div>
+                <canvas id="comparisonChart" width="600" height="350"></canvas>
+                <div id="comparisonLegend" class="comparison-legend"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
